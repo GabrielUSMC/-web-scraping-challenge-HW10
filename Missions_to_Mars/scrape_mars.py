@@ -44,39 +44,30 @@ def scrape():
 
 # %%
     executable_path = {'executable_path': 'chromedriver.exe'}
-    browser = Browser('chrome', **executable_path, headless=False)
+    with Browser('chrome', **executable_path, headless=False) as browser:
+        url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
+        browser.visit(url)
+        browser.links.find_by_partial_text('FULL IMAGE').click()
+        time.sleep(1)
+        html = browser.html
+        soup = bs(html, 'html.parser')
+        featured_image_url = 'http://www.jpl.nasa.gov' + soup.find(class_='fancybox-image')['src']
+        py_dict['featured_image_url'] = featured_image_url
 
 
 # %%
-    url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
-    browser.visit(url)
-
-
-# %%
-    browser.links.find_by_partial_text('FULL IMAGE').click()
-    time.sleep(1)
-    html = browser.html
-    soup = bs(html, 'html.parser')
-    featured_image_url = 'http://www.jpl.nasa.gov' + soup.find(class_='fancybox-image')['src']
-    py_dict['featured_image_url'] = featured_image_url
-    # print(featured_image_url)
-
-
-# %%
-    executable_path = {'executable_path': 'chromedriver.exe'}
-    browser = Browser('chrome', **executable_path, headless=False)
-    url = 'https://twitter.com/marswxreport?lang=en'
-
-
-# %%
-    browser.visit(url)
-    time.sleep(1)
-    html = browser.html
-    soup = bs(html, 'html.parser')
-    divs = soup.select('div.css-901oao.r-jwli3a.r-1qd0xha.r-a023e6.r-16dba41.r-ad9z0x.r-bcqeeo.r-bnwqim.r-qvutc0')
-    mars_weather = divs[0].text
-    py_dict['mars_weather'] = mars_weather
-    # print(mars_weather)
+    # executable_path = {'executable_path': 'chromedriver.exe'}
+    with Browser('chrome', **executable_path, headless=False) as browser:
+        # browser = Browser('chrome', **executable_path, headless=False)
+        url = 'https://twitter.com/marswxreport?lang=en'
+        browser.visit(url)
+        time.sleep(1)
+        html = browser.html
+        soup = bs(html, 'html.parser')
+        divs = soup.select('div.css-901oao.r-jwli3a.r-1qd0xha.r-a023e6.r-16dba41.r-ad9z0x.r-bcqeeo.r-bnwqim.r-qvutc0')
+        mars_weather = divs[0].text
+        py_dict['mars_weather'] = mars_weather
+        # print(mars_weather)
 
 
 # %%
@@ -103,37 +94,36 @@ def scrape():
 
 # %%
     url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
-    browser = Browser('chrome', **executable_path, headless=False)
-    browser.visit(url)
-    hemisphere_image_urls = []
+    with Browser('chrome', **executable_path, headless=False) as browser:
+        # browser = Browser('chrome', **executable_path, headless=False)
+        browser.visit(url)
+        hemisphere_image_urls = []
+        
+        for i in range(4):
+            links = browser.find_by_css('img.thumb')
+            links[i].click()
+            title_arr = browser.title.split(' ')
+            title = ""
+            for word in title_arr:
+                if word == "Hemisphere":
+                    title = title + word
+                    break
+                else:
+                    title = title + word + " "
+            browser.links.find_by_partial_text('Sample').click()
+            time.sleep(2.5)
+            browser.windows.current = browser.windows[1]
+            html = browser.html
+            soup = bs(html, 'html.parser')
+            img_url = soup.img['src']
+            browser.windows.current = browser.windows[0]
+            browser.windows[1].close()
+            browser.back()
+            hemisphere_image_urls.append({"title": title, "img_url": img_url})
 
-
-# %%
-    for i in range(4):
-        links = browser.find_by_css('img.thumb')
-        links[i].click()
-        title_arr = browser.title.split(' ')
-        title = ""
-        for word in title_arr:
-            if word == "Hemisphere":
-                title = title + word
-                break
-            else:
-                title = title + word + " "
-        browser.links.find_by_partial_text('Sample').click()
-        time.sleep(1.5)
-        browser.windows.current = browser.windows[1]
-        html = browser.html
-        soup = bs(html, 'html.parser')
-        img_url = soup.img['src']
-        browser.windows.current = browser.windows[0]
-        browser.windows[1].close()
-        browser.back()
-        hemisphere_image_urls.append({"title": title, "img_url": img_url})
-
-    py_dict['hemisphere_image_urls'] = hemisphere_image_urls
+        py_dict['hemisphere_image_urls'] = hemisphere_image_urls
     return py_dict
 # %%
     # hemisphere_image_urls
 
-print(scrape())
+# print(scrape())
