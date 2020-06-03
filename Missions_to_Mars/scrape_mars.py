@@ -78,6 +78,8 @@ def scrape():
 
 # %%
     table = tables[0]
+    table = table.set_index(0, inplace=True)
+    table = tables[0]
     # table
 
 
@@ -111,7 +113,7 @@ def scrape():
                 else:
                     title = title + word + " "
             browser.links.find_by_partial_text('Sample').click()
-            time.sleep(2.5)
+            time.sleep(3)
             browser.windows.current = browser.windows[1]
             html = browser.html
             soup = bs(html, 'html.parser')

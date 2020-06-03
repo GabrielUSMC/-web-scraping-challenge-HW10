@@ -5,23 +5,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Hot Finds</title>
+  <title>Mission to Mars</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 
 <body>
-  <div class="container">
+  <div class="container-fluid">
 
     <div class="jumbotron text-center">
-      <h1>Hot Finds On Craigslist</h1>
-      <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Find An Awesome Deal!</a></p>
+      <h1>Mission to Mars</h1>
+      <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
     </div>
 
     <!-- Craigslist Listings -->
-    <div class="row" id="craiglist-listings">
+    <div class="row" id="latest_news">
       <div class="col-md-12">
-        <h4 class="heading">{{listings.price}} {{listings.headline}}</h4>
-        <small>{{listings.hood}}</small>
+        <h1 class="heading">Latest Mars News</h1>
+        <h3 class="heading">{{listings.news_title}}</h3>
+        <p>{{listings.news_p}}</p>
+      </div>
+    </div>
+    <div class="row" id="featured_image weather facts">
+      <div class="col-md-8">
+        <h1 class="heading">Featured Mars Image</h1>
+        <img src="{{ listings.featured_image_url }}" alt="Featured Image">
+      </div>
+      <div class="col-md-4 border">
+          <h2 class="heading">Current Weather on Mars</h2>
+          <p>{{listings.mars_weather}}</p>
+      </div>
+      <div class="col-md-4">
+        <h2 class="heading">Mars Facts</h2>
+        {{listings.html_table|safe}}
+      </div>
+      <div class="row" id="hemisphere heading">
+        <div class="col-md-12">
+          <h1 class="text-center">Mars Hemispheres</h1>
+        </div>
+      </div>
+      <div class="row" id="hemispheres0_1">
+        <div class="col-md-6">
+          <div class="card">
+            <img src="{{ listings.hemisphere_image_urls[0].img_url }}" class="card-img-top img-responsive" alt="{{ listings.hemisphere_image_urls[0].title }}">
+            <div class="card-body">
+              <h1 class = "card-text text-center">{{ listings.hemisphere_image_urls[0].title }}</h1>
+            </div>
+        </div>
+        </div>
+        <div class="card col-md-6">
+          <img src="{{ listings.hemisphere_image_urls[1].img_url }}" class="card-img-top img-responsive" alt="{{ listings.hemisphere_image_urls[1].title }}">
+          <h1 class = "card-text text-center">{{ listings.hemisphere_image_urls[1].title }}</h1>
+        </div>
+      </div>
+
+      <div class="row" id="hemispheres2_3">
+        <div class="col-md-6">
+          <img src="{{ listings.hemisphere_image_urls[2].img_url }}" class="img-responsive" alt="{{ listings.hemisphere_image_urls[2].title }}">
+          <h1 class = "text-center">{{ listings.hemisphere_image_urls[2].title }}</h1>
+        </div>
+        <div class="col-md-6">
+          <img src="{{ listings.hemisphere_image_urls[3].img_url }}" class="img-responsive" alt="{{ listings.hemisphere_image_urls[3].title }}">
+          <h1 class = "text-center">{{ listings.hemisphere_image_urls[3].title }}</h1>
+        </div>
       </div>
     </div>
 
